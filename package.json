@@ -1,0 +1,149 @@
+{
+    "author":"Danilo Toro - Danilo.toro@rocketbot.cl",
+    "description": "Modulo para aplicar OCR sobre una imagen web o archivo",
+    "disclaimer":"THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.",
+    "version":"0.1",
+    "license": "MIT",
+    "homepage":"http://rockertbot.cl",
+    "linux": true,
+    "windows":true,
+    "mac":true,
+    "docker":true,
+    "name": "OCR-Azure",
+    "dependencies": {
+        "requests": "2.21.0"
+    },
+    "title": {
+        "en": "OCR Azure",
+        "es": "OCR Azure",
+        "cn": "OCR Azure"
+    },
+    "icon": " data:image/png;base64,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",
+    "children": [
+
+        {
+            "en": {
+                "title": "OCR azure convert file",
+                "description": "Extract text from file.",
+                "title_options": null,
+                "options":null
+            },
+            "es": {
+                "title": "OCR azure convertir imagen",
+                "description": "Extrae texto de una imagen.",
+                "title_options": null,
+                "options":null
+            },
+            "form": {
+                "css": "modal-lg",
+                "inputs": [
+                    {
+                        "type": "file_select",
+                        "placeholder": {
+                            "es": "Archivo de Imagen o URL",
+                            "en": "Image file or url"
+                        },
+                        "title": {
+                            "es": "Imagen:",
+                            "en": "Image:"
+                        },
+                        "help": {
+                            "es": "Ruta o url de la imagen",
+                            "en": "File Path or url of the image "
+                        },
+                        "id": "image_path",
+                        "css": "col-md-12"
+                    },
+                    {
+                        "type": "input",
+                        "placeholder": {
+                            "es": "API Key",
+                            "en": "API Key"
+                        },
+                        "title": {
+                            "es": "Ingrese su key",
+                            "en": "Input your key"
+                        },
+                        "help": {
+                            "en": "Obtain your key on https://portal.azure.com",
+                            "es": "Busque su key en https://portal.azure.com "
+                        },
+                        "id": "api_key",
+                        "css": "col-md-12"
+                    },
+                    {
+                        "type": "select",
+                        "placeholder": {
+                            "es": "",
+                            "en": ""
+                        },
+                        "title": {
+                            "es": "Seleccione Región",
+                            "en": "Select Region"
+                        },
+                        "options":[
+                            {"title": "Australia East", "value":"australiaeast"},
+                            {"title":"Brazil South", "value":"brazilsouth"},
+                            {"title":"Canada Central", "value":"canadacentral"},
+                            {"title":"Central India", "value":"centralindia"},
+                            {"title":"Central US", "value":"centralus"},
+                            {"title":"East Asia", "value":"eastasia"},
+                            {"title":"East US", "value":"eastus"},
+                            {"title":"East US 2", "value":"eastus2"},
+                            {"title":"France Central", "value":"francecentral"},
+                            {"title":"Japan East", "value":"japaneast"},
+                            {"title":"Japan West", "value":"japanwest"},
+                            {"title":"Korea Central", "value":"koreacentral"},
+                            {"title":"North Central US", "value":"northcentralus"},
+                            {"title":"North Europe", "value":"northeurope"},
+                            {"title":"South Africa North", "value":"southafricanorth"},
+                            {"title":"South Central US", "value":"southcentralus"},
+                            {"title":"Southeast Asia", "value":"southeastasia"},
+                            {"title":"UK South", "value":"uksouth"},
+                            {"title":"West Central US", "value":"westcentralus"},
+                            {"title":"West Europe", "value":"westeurope"},
+                            {"title":"West US", "value":"westus"},
+                            {"title":"West US 2", "value":"westus2"}
+                        ],
+                        "help": {
+                            "es": "Seleccione la región ",
+                            "en": "Select region"                            
+                        },
+                        "id": "region",
+                        "css": "col-md-5"
+                    },
+                    {
+                        "type": "input",
+                        "placeholder": {
+                            "es": "{resultado}",
+                            "en": "{result}"
+                        },
+                        "title": {
+                            "es": "Resultado",
+                            "en": "Result"
+                        },
+                        "help": {
+                            "en": "Variable where the result is stored without {}",
+                            "es": "Variable donde se almacena el resultado sin {}"
+                        },
+                        "id": "result",
+                        "css": "col-md-7"
+                    }
+
+                ]
+            },
+            "video_youtube": "",
+            "icon": " data:image/png;base64,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",
+            "module": "GetOCR",
+            "module_name": "OCR-Azure",
+            "visible": true,
+            "options": false,
+            "father": "module",
+            "group": "scripts",
+            "linux": true,
+            "windows":true,
+            "mac":true,
+            "docker":true
+        }
+    ]
+}
