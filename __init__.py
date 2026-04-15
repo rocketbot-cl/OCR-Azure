@@ -23,11 +23,61 @@ Para instalar librerias se debe ingresar por terminal a la carpeta "libs"
     pip install <package> -t .
 
 """
-
-
 import requests
 import urllib.parse
+import json
+import time
+from time import sleep
 
+
+def _is_url(s: str) -> bool:
+    return isinstance(s, str) and s.lower().startswith(("http://", "https://"))
+
+
+def _poll_operation(op_url: str, headers: dict, timeout_sec: int = 60, poll_interval: float = 1.0) -> dict:
+    t0 = time.time()
+    last = None
+    while True:
+        r = requests.get(op_url, headers=headers)
+        r.raise_for_status()
+        last = r.json()
+        status = (last.get("status") or "").lower()
+
+        if status in ("succeeded", "failed"):
+            return last
+
+        if time.time() - t0 > timeout_sec:
+            raise TimeoutError(f"Timeout polling operation. Last status={status}")
+
+        sleep(poll_interval)
+
+
+def _extract_text_from_vision_read(result_json: dict) -> str:
+    """
+    Azure Vision Read v3.2:
+      analyzeResult -> readResults -> lines -> text
+    """
+    out = []
+    analyze = result_json.get("analyzeResult") or {}
+    pages = analyze.get("readResults") or []
+    for p in pages:
+        for line in (p.get("lines") or []):
+            txt = line.get("text")
+            if txt:
+                out.append(txt)
+    return "\n".join(out).strip()
+
+
+def _extract_text_from_di(result_json: dict) -> str:
+    """
+    Document Intelligence:
+      analyzeResult -> content (cuando aplica)
+    """
+    analyze = result_json.get("analyzeResult") or {}
+    content = analyze.get("content")
+    if isinstance(content, str):
+        return content.strip()
+    return ""
 
 def busqueda(key,tree):
     if isinstance(tree,(list,tuple)): # This is the tree
@@ -46,10 +96,7 @@ def busqueda(key,tree):
     elif isinstance(tree,str):
         if tree == key:
             return tree
-    #print("No se encontro")
     return ""
-
-
 
 module = GetParams("module")
 
@@ -80,7 +127,6 @@ if module == "GetOCR":
             "Ocp-Apim-Subscription-Key": api_key
         }
         
-    
     params = urllib.parse.urlencode({
         # Request parameters
         'language': 'unk',
@@ -107,3 +153,119 @@ if module == "GetOCR":
         PrintException()
         raise e
 
+# NUEVO: Computer Vision READ v3.2
+
+if module == "GetReadOCR":
+    image_path = GetParams("image_path")   # URL o ruta local
+    api_key = GetParams("api_key")
+    region = GetParams("region")
+    result = GetParams("result")
+
+    # opcionales (si no existen en forms, quedan None)
+    language = GetParams("language")            # ej: "es", "en"
+    timeout = GetParams("timeout")              # ej: 60
+    poll_interval = GetParams("poll_interval")  # ej: 1
+
+    timeout_sec = int(timeout) if timeout else 60
+    poll_interval_sec = float(poll_interval) if poll_interval else 1.0
+
+    try:
+        base = f"https://{region}.api.cognitive.microsoft.com"
+        url = f"{base}/vision/v3.2/read/analyze"
+
+        headers = {
+            "Ocp-Apim-Subscription-Key": api_key
+        }
+
+        params = {}
+        if language:
+            params["language"] = language
+
+        if _is_url(image_path):
+            headers["Content-Type"] = "application/json"
+            payload = {"url": image_path}
+            resp = requests.post(url, headers=headers, params=params, json=payload)
+        else:
+            headers["Content-Type"] = "application/octet-stream"
+            with open(image_path, "rb") as f:
+                data = f.read()
+            resp = requests.post(url, headers=headers, params=params, data=data)
+
+        resp.raise_for_status()
+
+        op_url = resp.headers.get("Operation-Location")
+        if not op_url:
+            raise Exception("Operation-Location header not found (Vision Read).")
+
+        op_headers = {"Ocp-Apim-Subscription-Key": api_key}
+        op_json = _poll_operation(op_url, op_headers, timeout_sec=timeout_sec, poll_interval=poll_interval_sec)
+
+        op_json["textAnnotation"] = _extract_text_from_vision_read(op_json)
+
+        SetVar(result, op_json)
+
+    except Exception as e:
+        PrintException()
+        raise e
+
+# NUEVO: Azure Document Intelligence (Form Recognizer)
+
+if module == "AnalyzeDocument":
+    source = GetParams("source")          # URL o ruta local (PDF/imagen)
+    api_key = GetParams("api_key")
+    region = GetParams("region")
+    model_id = GetParams("model_id")      # ej: "prebuilt-read"
+    result = GetParams("result")
+
+    # opcionales
+    api_version = GetParams("api_version")        # ej: "2023-07-31"
+    pages = GetParams("pages")                    # ej: "1-3"
+    locale = GetParams("locale")                  # ej: "es-ES"
+    timeout = GetParams("timeout")
+    poll_interval = GetParams("poll_interval")
+
+    api_version = api_version or "2023-07-31"
+    timeout_sec = int(timeout) if timeout else 60
+    poll_interval_sec = float(poll_interval) if poll_interval else 1.0
+
+    try:
+        base = f"https://{region}.api.cognitive.microsoft.com"
+        analyze_url = f"{base}/formrecognizer/documentModels/{model_id}:analyze"
+
+        params = {"api-version": api_version}
+        if pages:
+            params["pages"] = pages
+        if locale:
+            params["locale"] = locale
+
+        headers = {
+            "Ocp-Apim-Subscription-Key": api_key
+        }
+
+        if _is_url(source):
+            headers["Content-Type"] = "application/json"
+            payload = {"urlSource": source}
+            resp = requests.post(analyze_url, headers=headers, params=params, json=payload)
+        else:
+            headers["Content-Type"] = "application/octet-stream"
+            with open(source, "rb") as f:
+                data = f.read()
+            resp = requests.post(analyze_url, headers=headers, params=params, data=data)
+
+        resp.raise_for_status()
+
+        op_url = resp.headers.get("Operation-Location")
+        if not op_url:
+            raise Exception("Operation-Location header not found (Document Intelligence).")
+
+        op_headers = {"Ocp-Apim-Subscription-Key": api_key}
+        op_json = _poll_operation(op_url, op_headers, timeout_sec=timeout_sec, poll_interval=poll_interval_sec)
+
+        # texto completo (cuando venga)
+        op_json["textAnnotation"] = _extract_text_from_di(op_json)
+
+        SetVar(result, op_json)
+
+    except Exception as e:
+        PrintException()
+        raise e

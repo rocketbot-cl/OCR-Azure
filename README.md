@@ -1,25 +1,46 @@
-# OCR_Azure
- Module for OCR to an image or URL
- 
- **You must create an account in <a href="https://portal.azure.com">Azure Portal</a>
 
-![alt text](https://raw.githubusercontent.com/rocketbot-cl/OCR_Azure/master/example/OcrAzure.png)
 
-<h2>Link to API Documentation</h2>
 
-<ul>
-  <li>
-    <strong>
-      <a href="https://docs.microsoft.com/en-us/azure/cognitive-services/computer-vision/home">Computer Vision API</a>
-    </strong>  
-  </li>  
-</ul>  
 
-<h2>License</h2>
+# OCR Azure
+  
+Module to apply OCR on a web image or file  
 
-<p><a href="http://badges.mit-license.org" rel="nofollow"><img src="https://camo.githubusercontent.com/107590fac8cbd65071396bb4d04040f76cde5bde/687474703a2f2f696d672e736869656c64732e696f2f3a6c6963656e73652d6d69742d626c75652e7376673f7374796c653d666c61742d737175617265" alt="License" data-canonical-src="http://img.shields.io/:license-mit-blue.svg?style=flat-square" style="max-width:100%;"></a></p>
+*Read this in other languages: [English](README.md), [Português](README.pr.md), [Español](README.es.md)*
 
-<ul>
-  <li><strong><a href="http://opensource.org/licenses/mit-license.php" rel="nofollow">MIT license</a></strong></li>
-</ul>  
+## How to install this module
+  
+To install the module in Rocketbot Studio, it can be done in two ways:
+1. Manual: __Download__ the .zip file and unzip it in the modules folder. The folder name must be the same as the module and inside it must have the following files and folders: \__init__.py, package.json, docs, example and libs. If you have the application open, refresh your browser to be able to use the new module.
+2. Automatic: When entering Rocketbot Studio on the right margin you will find the **Addons** section, select **Install Mods**, search for the desired module and press install.  
 
+
+## Overview
+
+
+1. OCR azure convert file  
+Extract text from file.
+
+2. Computer Vision READ  
+Extracts text from an image in a more modern and accurate way than classic OCR.
+
+3. Document Intelligence  
+Analyzes complete documents.  
+
+
+
+
+----
+### OS
+
+- windows
+- mac
+- linux
+- docker
+
+### Dependencies
+- [**requests**](https://pypi.org/project/requests/)
+### License
+  
+![MIT](https://camo.githubusercontent.com/107590fac8cbd65071396bb4d04040f76cde5bde/687474703a2f2f696d672e736869656c64732e696f2f3a6c6963656e73652d6d69742d626c75652e7376673f7374796c653d666c61742d737175617265)  
+[MIT](http://opensource.org/licenses/mit-license.ph)
