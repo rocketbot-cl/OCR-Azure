@@ -130,7 +130,7 @@ if module == "GetOCR":
     params = urllib.parse.urlencode({
         # Request parameters
         'language': 'unk',
-        'detectOrientation ': 'true',
+        'detectOrientation': 'true',
     })
 
     try:
