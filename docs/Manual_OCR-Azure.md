@@ -1,7 +1,3 @@
-
-
-
-
 # OCR Azure
   
 Module to apply OCR on a web image or file  
